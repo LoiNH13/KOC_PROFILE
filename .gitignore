@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+src/fe/node_modules/
+
+# Build outputs
+dist/
+src/fe/dist/
+build/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+src/fe/.env.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Serena (internal tool config)
+.serena/
+.claude/
+.mcp.json

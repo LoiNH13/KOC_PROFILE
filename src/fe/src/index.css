@@ -1,0 +1,139 @@
+@import "tailwindcss";
+
+/* ── Clay Pop design tokens ──────────────────────────────── */
+@theme {
+  /* Palette */
+  --color-clay-bg:          #FFF4F0;
+  --color-clay-bg-alt:      #FFEADF;
+  --color-clay-surface:     #FFFFFF;
+  --color-clay-ink:         #2E1A2E;
+  --color-clay-ink-soft:    #6B4A5E;
+  --color-clay-ink-muted:   #B09CA8;
+  --color-clay-border:      rgba(46,26,46,0.08);
+  --color-clay-pink:        #FFB8D1;
+  --color-clay-pink-deep:   #FF8FB5;
+  --color-clay-mint:        #A8EBC8;
+  --color-clay-mint-deep:   #6FD9A0;
+  --color-clay-butter:      #FFE07A;
+  --color-clay-butter-deep: #FFCB3D;
+  --color-clay-lilac:       #C8B5F5;
+  --color-clay-peach:       #FFB890;
+  --color-clay-sky:         #A8D8FF;
+  --color-clay-accent:      #FF5B8A;
+  --color-clay-accent-ink:  #C42862;
+
+  /* Typography */
+  --font-display: "Fraunces", "Georgia", serif;
+  --font-body:    "Plus Jakarta Sans", -apple-system, system-ui, sans-serif;
+
+  /* Border radius */
+  --radius-clay:    1.75rem; /* 28px */
+  --radius-clay-lg: 2.5rem;  /* 40px */
+
+  /* Shadows */
+  --shadow-clay: inset 0 2px 4px rgba(255,255,255,0.6),
+    inset 0 -3px 6px rgba(46,26,46,0.08),
+    0 3px 0 rgba(46,26,46,0.08),
+    0 10px 24px rgba(255,143,181,0.28);
+
+  --shadow-clay-lg: inset 0 3px 6px rgba(255,255,255,0.7),
+    inset 0 -4px 8px rgba(46,26,46,0.1),
+    0 5px 0 rgba(46,26,46,0.1),
+    0 18px 40px rgba(255,143,181,0.35);
+
+  --shadow-clay-dark: inset 0 2px 4px rgba(255,255,255,0.1),
+    0 5px 0 rgba(0,0,0,0.15),
+    0 18px 36px rgba(46,26,46,0.2);
+
+  /* Animations */
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-blob:    blob-float 20s ease-in-out infinite;
+  --animate-spin-slow: spin 12s linear infinite;
+  --animate-spin-med:  spin 8s linear infinite reverse;
+  --animate-spin-fast: spin 15s linear infinite;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@keyframes blob-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(30px, -20px) scale(1.05); }
+  66%       { transform: translate(-20px, 30px) scale(0.95); }
+}
+
+/* ── Dark mode overrides ─────────────────────────────────── */
+html.dark {
+  --color-clay-bg:          #1A0E1C;
+  --color-clay-bg-alt:      #241028;
+  --color-clay-surface:     #2E1834;
+  --color-clay-ink:         #FFF4F8;
+  --color-clay-ink-soft:    #D4B8C8;
+  --color-clay-ink-muted:   #9A7A8C;
+  --color-clay-border:      rgba(255,244,248,0.1);
+  --color-clay-pink:        #6B2E4A;
+  --color-clay-pink-deep:   #8E3A62;
+  --color-clay-mint:        #2B5844;
+  --color-clay-mint-deep:   #3D7A5F;
+  --color-clay-butter:      #6B5420;
+  --color-clay-butter-deep: #8E7028;
+  --color-clay-lilac:       #4A3A6E;
+  --color-clay-peach:       #7A3A4A;
+  --color-clay-accent:      #FF78A3;
+  --color-clay-accent-ink:  #FFB5CC;
+  --shadow-clay:
+    inset 0 2px 3px rgba(255,255,255,0.08),
+    inset 0 -3px 6px rgba(0,0,0,0.4),
+    0 3px 0 rgba(0,0,0,0.4),
+    0 10px 24px rgba(0,0,0,0.5);
+  --shadow-clay-lg:
+    inset 0 3px 6px rgba(255,255,255,0.1),
+    inset 0 -4px 8px rgba(0,0,0,0.5),
+    0 5px 0 rgba(0,0,0,0.5),
+    0 18px 40px rgba(0,0,0,0.6);
+}
+
+@keyframes shimmer-sweep {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+/* ── Print: isolate media kit ────────────────────────────── */
+@media print {
+  @page { size: A4; margin: 0; }
+  html, body { background: #fff !important; margin: 0; padding: 0; }
+  body * { visibility: hidden; }
+  [data-mediakit], [data-mediakit] * { visibility: visible; }
+  [data-mediakit] {
+    position: absolute !important; left: 0; top: 0;
+    width: 794px !important; height: 1123px !important;
+    box-shadow: none !important;
+    page-break-after: avoid;
+  }
+  .no-print { display: none !important; }
+}
+
+/* ── Base ────────────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-clay-bg);
+    color: var(--color-clay-ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  input, button, textarea, select {
+    font-family: inherit;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-clay-accent);
+    outline-offset: 2px;
+  }
+}
