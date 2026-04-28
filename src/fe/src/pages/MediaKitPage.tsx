@@ -22,7 +22,9 @@ const TONE_BG: Record<string, string> = {
   sky:     'var(--color-clay-sky)',
 }
 
-export function MediaKitPage() {
+import type { Page } from '@/types'
+
+export function MediaKitPage({ onNavigate }: { onNavigate?: (p: Page) => void }) {
   const { lang } = useLang()
   const KOC_DATA = useKocData()
   const STATS = useSheetData('stats', fetchStats, STATS_FALLBACK)
@@ -69,6 +71,19 @@ export function MediaKitPage() {
           maxWidth: '100%',
         }}
       >
+        {onNavigate && (
+          <button
+            onClick={() => onNavigate('landing')}
+            style={{
+              padding: '10px 18px', borderRadius: 999,
+              background: 'var(--color-clay-bg-alt)', color: 'var(--color-clay-ink)', border: 'none',
+              fontSize: 13, fontWeight: 700, cursor: 'pointer',
+              fontFamily: 'inherit',
+            }}
+          >
+            ← {lang === 'vi' ? 'Quay lại' : 'Back'}
+          </button>
+        )}
         <button
           onClick={() => window.print()}
           style={{
@@ -264,7 +279,7 @@ export function MediaKitPage() {
             </div>
           )}
 
-          {PACKAGES.length > 0 && (
+          {KOC_DATA.packagesVisible && PACKAGES.length > 0 && (
             <div style={{ padding: '16px 36px 0', display: 'grid', gridTemplateColumns: `repeat(${Math.min(PACKAGES.length, 3)}, 1fr)`, gap: 10 }}>
               {PACKAGES.slice(0, 3).map((p, i) => (
                 <div key={p.id} style={{

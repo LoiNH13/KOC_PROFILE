@@ -49,7 +49,7 @@ function AppInner() {
     portfolio: <PortfolioPage onNavigate={setPage} />,
     booking:   <BookingPage   onNavigate={setPage} />,
     contact:   <ContactPage   onNavigate={setPage} />,
-    mediakit:  <MediaKitPage />,
+    mediakit:  <MediaKitPage onNavigate={setPage} />,
   }
 
   return (
