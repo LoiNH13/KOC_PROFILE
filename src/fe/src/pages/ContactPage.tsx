@@ -42,7 +42,21 @@ export function ContactPage({ onNavigate }: ContactPageProps) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (name && email && msg) await submit({ name, email, message: msg, lang })
+    if (!name || !email || !msg) return
+    await submit({ name, email, message: msg, lang })
+    // Fire-and-forget: gửi email thông báo qua Edge Function
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined
+    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined
+    if (supabaseUrl && supabaseAnonKey) {
+      fetch(`${supabaseUrl}/functions/v1/send-contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${supabaseAnonKey}`,
+        },
+        body: JSON.stringify({ name, email, message: msg, lang, notifyEmails: KOC_DATA.notifyEmails ?? [] }),
+      }).catch(() => {/* non-critical */})
+    }
   }
 
   return (

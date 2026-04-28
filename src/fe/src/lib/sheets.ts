@@ -119,6 +119,9 @@ export async function fetchKocData(): Promise<KocData> {
     youtubeUrl: r.youtube_url || undefined,
     facebookUrl: r.facebook_url || undefined,
     packagesVisible: r.show_packages === 'true',
+    notifyEmails: r.notify_emails
+      ? r.notify_emails.split(',').map((e: string) => e.trim()).filter(Boolean)
+      : undefined,
   }
 }
 

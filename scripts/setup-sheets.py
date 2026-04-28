@@ -88,7 +88,7 @@ TABS = {
     },
     "koc_profile": {
         "key": None,
-        "headers": ["name", "handle", "tagline_vi", "tagline_en", "bio_vi", "bio_en", "location", "email", "phone", "avatar_url", "logo_url", "tiktok_url", "instagram_url", "youtube_url", "facebook_url", "show_packages"],
+        "headers": ["name", "handle", "tagline_vi", "tagline_en", "bio_vi", "bio_en", "location", "email", "phone", "avatar_url", "logo_url", "tiktok_url", "instagram_url", "youtube_url", "facebook_url", "show_packages", "notify_emails"],
         "rows": [
             [
                 "Hữu Lợi",
@@ -107,6 +107,7 @@ TABS = {
                 "",  # youtube_url
                 "",  # facebook_url
                 "",  # show_packages: điền 'true' để hiện phần gói hợp tác
+                "",  # notify_emails: email nhận thông báo, cách nhau bằng dấu phẩy (vd: a@gmail.com,b@gmail.com)
             ]
         ],
     },

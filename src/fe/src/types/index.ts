@@ -22,6 +22,7 @@ export interface KocData {
   youtubeUrl?: string
   facebookUrl?: string
   packagesVisible?: boolean
+  notifyEmails?: string[]
 }
 
 export interface AboutPhoto {
