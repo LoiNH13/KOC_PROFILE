@@ -52,7 +52,7 @@ export function BookingCTA({ onNavigate }: BookingCTAProps) {
 
           <ClayCard bg="var(--color-clay-surface)" className="p-6">
             <p className="font-display text-base lg:text-[15px] font-bold text-clay-ink mb-1">
-              💌 {lang === 'vi' ? 'Gửi brief — phản hồi 24h' : 'Send brief — reply in 24h'}
+              � {lang === 'vi' ? 'Liên hệ hợp tác — phản hồi 24h' : 'Contact for collab — reply in 24h'}
             </p>
             <p className="text-xs text-clay-ink-soft mb-4">
               {lang === 'vi'
@@ -65,8 +65,8 @@ export function BookingCTA({ onNavigate }: BookingCTAProps) {
               <li>✅ {lang === 'vi' ? '2 vòng chỉnh sửa' : '2 revision rounds'}</li>
               <li>✅ {lang === 'vi' ? 'Analytics report sau đăng' : 'Analytics report post-launch'}</li>
             </ul>
-            <Button variant="clay" size="md" className="w-full" onClick={() => onNavigate('booking')}>
-              💌 {lang === 'vi' ? 'Gửi brief' : 'Submit brief'}
+            <Button variant="clay" size="md" className="w-full" onClick={() => onNavigate('contact')}>
+              📩 {lang === 'vi' ? 'Liên hệ ngay' : 'Contact now'}
             </Button>
           </ClayCard>
         </div>

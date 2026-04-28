@@ -61,8 +61,8 @@ export function Hero({ onNavigate }: HeroProps) {
             <Button variant="clay" size="lg" onClick={() => onNavigate('mediakit')}>
               {lang === 'vi' ? 'Xem media kit' : 'View media kit'} →
             </Button>
-            <Button variant="ghost" size="lg" onClick={() => onNavigate('booking')}>
-              💼 {lang === 'vi' ? 'Booking ngay' : 'Book now'}
+            <Button variant="ghost" size="lg" onClick={() => onNavigate('contact')}>
+              📩 {lang === 'vi' ? 'Liên hệ ngay' : 'Contact now'}
             </Button>
           </div>
 

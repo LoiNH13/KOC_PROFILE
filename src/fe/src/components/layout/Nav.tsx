@@ -14,7 +14,6 @@ const LINKS: { key: Page; vi: string; en: string }[] = [
   { key: 'landing',   vi: 'Trang chủ', en: 'Home' },
   { key: 'about',     vi: 'Về mình',   en: 'About' },
   { key: 'portfolio', vi: 'Portfolio', en: 'Portfolio' },
-  { key: 'booking',   vi: 'Booking',   en: 'Booking' },
   { key: 'contact',   vi: 'Liên hệ',   en: 'Contact' },
 ]
 
@@ -86,11 +85,6 @@ export function Nav({ page, onNavigate }: NavProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="hidden sm:block">
-            <Button variant="clay" size="sm" onClick={() => go('booking')}>
-              💌 {lang === 'vi' ? 'Book ngay' : 'Book now'}
-            </Button>
-          </div>
           <button
             onClick={() => setOpen(!open)}
             aria-label={open ? 'Close menu' : 'Open menu'}
@@ -142,10 +136,7 @@ export function Nav({ page, onNavigate }: NavProps) {
                     </button>
                   )
                 })}
-                <div className="border-t border-clay-border my-1" />
-                <Button variant="clay" size="md" className="w-full" onClick={() => go('booking')}>
-                  💌 {lang === 'vi' ? 'Book ngay' : 'Book now'}
-                </Button>
+
               </div>
             </motion.div>
           </>
