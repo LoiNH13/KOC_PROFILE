@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { useLang } from '@/hooks/useLang'
 import { useKocData } from '@/hooks/useKocData'
-import { Button } from '@/components/ui/button'
 import type { Page } from '@/types'
 
 interface NavProps {
