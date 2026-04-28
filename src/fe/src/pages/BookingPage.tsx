@@ -10,19 +10,12 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { useLang } from '@/hooks/useLang'
 import { useFormSubmit } from '@/hooks/useFormSubmit'
-import { PACKAGES } from '@/data/koc-data'
+import { useSheetData } from '@/hooks/useSheetData'
+import { fetchPackages, fetchNiches } from '@/lib/sheets'
+import { PACKAGES as PACKAGES_FALLBACK, NICHES as NICHES_FALLBACK } from '@/data/koc-data'
 import type { Page } from '@/types'
 
 interface BookingPageProps { onNavigate: (p: Page) => void }
-
-const NICHES = [
-  { key: 'Beauty',    vi: 'Mỹ phẩm',   en: 'Beauty' },
-  { key: 'Fashion',   vi: 'Thời trang', en: 'Fashion' },
-  { key: 'Food',      vi: 'Ẩm thực',   en: 'Food' },
-  { key: 'Fitness',   vi: 'Sức khỏe',  en: 'Fitness' },
-  { key: 'Lifestyle', vi: 'Lifestyle',  en: 'Lifestyle' },
-  { key: 'Other',     vi: 'Khác',       en: 'Other' },
-]
 
 const BUDGETS = [
   { key: 'under500',  vi: 'Dưới 500K',     en: 'Under 500K' },
@@ -41,6 +34,8 @@ const TIMELINES = [
 export function BookingPage({ onNavigate }: BookingPageProps) {
   const { lang } = useLang()
   const [step, setStep] = useState(0)
+  const PACKAGES = useSheetData('packages', fetchPackages, PACKAGES_FALLBACK)
+  const NICHES = useSheetData('niches', fetchNiches, NICHES_FALLBACK)
   const { submit, loading: submitting, error: submitError, done: submitted } = useFormSubmit('booking_submissions')
 
   const [brand, setBrand] = useState('')
@@ -79,19 +74,18 @@ export function BookingPage({ onNavigate }: BookingPageProps) {
         tone="mint"
       />
 
-      <section className="px-12 pb-24">
-        <div className="max-w-[1240px] mx-auto grid grid-cols-[1fr_380px] gap-10 items-start">
+      <section className="px-4 sm:px-6 md:px-8 lg:px-12 pb-20 lg:pb-24">
+        <div className="max-w-[1240px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8 lg:gap-10 items-start">
 
-          {/* Form card */}
-          <ClayCard bg="var(--color-clay-surface)" className="p-10">
+          <ClayCard bg="var(--color-clay-surface)" className="p-6 sm:p-8 lg:p-10">
             {submitted ? (
               <motion.div
                 initial={{ opacity: 0, scale: 0.92 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="text-center py-16"
+                className="text-center py-12 lg:py-16"
               >
-                <div className="text-6xl mb-5">🎉</div>
-                <h2 className="font-display text-[36px] font-semibold tracking-tight mb-3">
+                <div className="text-5xl lg:text-6xl mb-5">🎉</div>
+                <h2 className="font-display text-[28px] sm:text-[32px] lg:text-[36px] font-semibold tracking-tight mb-3">
                   {lang === 'vi' ? 'Nhận được rồi!' : 'Got it!'}
                 </h2>
                 <p className="text-clay-ink-soft text-base leading-relaxed max-w-[380px] mx-auto mb-8">
@@ -105,10 +99,9 @@ export function BookingPage({ onNavigate }: BookingPageProps) {
               </motion.div>
             ) : (
               <>
-                {/* Step indicators */}
-                <div className="flex items-center gap-0 mb-10">
+                <div className="flex items-center gap-0 mb-8 lg:mb-10">
                   {steps.map((s, i) => (
-                    <div key={i} className="flex items-center flex-1 last:flex-none">
+                    <div key={s.en} className="flex items-center flex-1 last:flex-none">
                       <button
                         onClick={() => i < step && setStep(i)}
                         className="flex items-center gap-2.5 group"
@@ -127,7 +120,7 @@ export function BookingPage({ onNavigate }: BookingPageProps) {
                         </span>
                       </button>
                       {i < steps.length - 1 && (
-                        <div className={`flex-1 h-0.5 mx-3 rounded ${i < step ? 'bg-clay-mint' : 'bg-clay-border'}`} />
+                        <div className={`flex-1 h-0.5 mx-2 lg:mx-3 rounded ${i < step ? 'bg-clay-mint' : 'bg-clay-border'}`} />
                       )}
                     </div>
                   ))}
@@ -141,13 +134,13 @@ export function BookingPage({ onNavigate }: BookingPageProps) {
                           <Label className="text-xs font-bold uppercase tracking-widest text-clay-ink-muted mb-1.5 block">
                             {lang === 'vi' ? 'Tên brand / sản phẩm' : 'Brand / product name'} *
                           </Label>
-                          <Input value={brand} onChange={e => setBrand(e.target.value)} placeholder={lang === 'vi' ? 'vd: Hermosa Beauty' : 'e.g. Hermosa Beauty'} />
+                          <Input value={brand} onChange={e => setBrand(e.target.value)} placeholder={lang === 'vi' ? 'Tên brand của bạn' : 'Your brand name'} />
                         </div>
                         <div>
                           <Label className="text-xs font-bold uppercase tracking-widest text-clay-ink-muted mb-1.5 block">
                             {lang === 'vi' ? 'Email / Zalo liên hệ' : 'Email / contact'} *
                           </Label>
-                          <Input value={contact} onChange={e => setContact(e.target.value)} placeholder="hello@brand.com" />
+                          <Input value={contact} onChange={e => setContact(e.target.value)} placeholder="email@brand.com" />
                         </div>
                         <div>
                           <Label className="text-xs font-bold uppercase tracking-widest text-clay-ink-muted mb-1.5 block">
@@ -165,35 +158,39 @@ export function BookingPage({ onNavigate }: BookingPageProps) {
 
                     {step === 1 && (
                       <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-7">
-                        <div>
-                          <Label className="text-xs font-bold uppercase tracking-widest text-clay-ink-muted mb-3 block">
-                            {lang === 'vi' ? 'Ngách sản phẩm' : 'Product niche'} *
-                          </Label>
-                          <div className="flex flex-wrap gap-2">
-                            {NICHES.map(n => (
-                              <button key={n.key} type="button"
-                                onClick={() => setNiche(n.key)}
-                                className={`px-4 py-2 rounded-full text-sm font-semibold border transition-all ${niche === n.key ? 'bg-clay-accent text-white border-clay-accent shadow-clay' : 'bg-clay-bg-alt border-clay-border text-clay-ink hover:border-clay-accent'}`}>
-                                {n[lang]}
-                              </button>
-                            ))}
+                        {NICHES.length > 0 && (
+                          <div>
+                            <Label className="text-xs font-bold uppercase tracking-widest text-clay-ink-muted mb-3 block">
+                              {lang === 'vi' ? 'Ngách sản phẩm' : 'Product niche'} *
+                            </Label>
+                            <div className="flex flex-wrap gap-2">
+                              {NICHES.map(n => (
+                                <button key={n.en} type="button"
+                                  onClick={() => setNiche(n.en)}
+                                  className={`px-4 py-2 rounded-full text-sm font-semibold border transition-all ${niche === n.en ? 'bg-clay-accent text-white border-clay-accent shadow-clay' : 'bg-clay-bg-alt border-clay-border text-clay-ink hover:border-clay-accent'}`}>
+                                  {n.emoji} {n[lang]}
+                                </button>
+                              ))}
+                            </div>
                           </div>
-                        </div>
-                        <div>
-                          <Label className="text-xs font-bold uppercase tracking-widest text-clay-ink-muted mb-3 block">
-                            {lang === 'vi' ? 'Gói hợp tác mong muốn' : 'Preferred package'}
-                          </Label>
-                          <div className="grid grid-cols-3 gap-3">
-                            {PACKAGES.map(p => (
-                              <button key={p.id} type="button"
-                                onClick={() => setPkg(p.id)}
-                                className={`p-3.5 rounded-2xl border text-left transition-all ${pkg === p.id ? 'border-clay-accent bg-clay-pink shadow-clay' : 'border-clay-border bg-clay-bg-alt hover:border-clay-accent'}`}>
-                                <p className="text-xs font-bold text-clay-accent uppercase tracking-wider mb-0.5">{p.name[lang]}</p>
-                                <p className="text-sm font-semibold text-clay-ink">{p.price[lang]}</p>
-                              </button>
-                            ))}
+                        )}
+                        {PACKAGES.length > 0 && (
+                          <div>
+                            <Label className="text-xs font-bold uppercase tracking-widest text-clay-ink-muted mb-3 block">
+                              {lang === 'vi' ? 'Gói hợp tác mong muốn' : 'Preferred package'}
+                            </Label>
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                              {PACKAGES.map(p => (
+                                <button key={p.id} type="button"
+                                  onClick={() => setPkg(p.id)}
+                                  className={`p-3.5 rounded-2xl border text-left transition-all ${pkg === p.id ? 'border-clay-accent bg-clay-pink shadow-clay' : 'border-clay-border bg-clay-bg-alt hover:border-clay-accent'}`}>
+                                  <p className="text-xs font-bold text-clay-accent uppercase tracking-wider mb-0.5">{p.name[lang]}</p>
+                                  <p className="text-sm font-semibold text-clay-ink">{p.price[lang]}</p>
+                                </button>
+                              ))}
+                            </div>
                           </div>
-                        </div>
+                        )}
                         <div>
                           <Label className="text-xs font-bold uppercase tracking-widest text-clay-ink-muted mb-3 block">
                             {lang === 'vi' ? 'Ngân sách dự kiến' : 'Estimated budget'} *
@@ -222,7 +219,7 @@ export function BookingPage({ onNavigate }: BookingPageProps) {
                             ))}
                           </div>
                         </div>
-                        <div className="flex gap-3 pt-2">
+                        <div className="flex gap-3 pt-2 flex-wrap">
                           <Button type="button" variant="ghost" size="md" onClick={() => setStep(0)}>← {lang === 'vi' ? 'Quay lại' : 'Back'}</Button>
                           <Button type="button" variant="clay" size="md" disabled={!canNext1} onClick={() => setStep(2)}>
                             {lang === 'vi' ? 'Tiếp theo →' : 'Next →'}
@@ -252,7 +249,7 @@ export function BookingPage({ onNavigate }: BookingPageProps) {
                             {lang === 'vi' ? 'Có lỗi xảy ra. Thử lại hoặc email trực tiếp.' : 'Something went wrong. Try again or email directly.'}
                           </p>
                         )}
-                        <div className="flex gap-3 pt-2">
+                        <div className="flex gap-3 pt-2 flex-wrap">
                           <Button type="button" variant="ghost" size="md" onClick={() => setStep(1)}>← {lang === 'vi' ? 'Quay lại' : 'Back'}</Button>
                           <Button type="submit" variant="clay" size="md" disabled={!canSubmit || submitting}>
                             {submitting ? '...' : lang === 'vi' ? '✉️ Gửi brief' : '✉️ Send brief'}
@@ -266,30 +263,7 @@ export function BookingPage({ onNavigate }: BookingPageProps) {
             )}
           </ClayCard>
 
-          {/* Sidebar */}
-          <div className="space-y-5 sticky top-24">
-            <ClayCard bg="var(--color-clay-mint)" className="p-6">
-              <p className="text-xs font-bold uppercase tracking-widest text-clay-ink-muted mb-3">
-                {lang === 'vi' ? 'Lịch tháng này' : 'This month'}
-              </p>
-              <div className="space-y-2">
-                {[
-                  { date: 'T3 29/4', status: 'taken',  vi: 'Đã đặt',  en: 'Taken' },
-                  { date: 'T6 2/5',  status: 'open',   vi: 'Còn chỗ', en: 'Open' },
-                  { date: 'T3 6/5',  status: 'open',   vi: 'Còn chỗ', en: 'Open' },
-                  { date: 'T6 9/5',  status: 'taken',  vi: 'Đã đặt',  en: 'Taken' },
-                  { date: 'T3 13/5', status: 'open',   vi: 'Còn chỗ', en: 'Open' },
-                ].map(slot => (
-                  <div key={slot.date} className="flex justify-between items-center text-sm">
-                    <span className="font-semibold text-clay-ink">{slot.date}</span>
-                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${slot.status === 'open' ? 'bg-white/70 text-emerald-700' : 'bg-white/30 text-clay-ink-muted'}`}>
-                      {slot[lang === 'vi' ? 'vi' : 'en']}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </ClayCard>
-
+          <div className="space-y-5 lg:sticky lg:top-24">
             <ClayCard bg="var(--color-clay-butter)" className="p-6">
               <p className="text-xs font-bold uppercase tracking-widest text-clay-ink-muted mb-3">
                 {lang === 'vi' ? 'Cam kết của mình' : 'My commitment'}

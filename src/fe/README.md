@@ -1,28 +1,57 @@
-# KOC Profile — Linh Chi
+# KOC Profile
 
 Website KOC cá nhân, bilingual VI/EN, Clay Pop design.
 
 ---
 
-## Dev Setup
+## Chạy project lần đầu (step by step)
+
+### Bước 1 — Clone & cài dependencies
 
 ```bash
-cp .env.local.example .env.local   # điền env vars (xem bên dưới)
+git clone <repo-url>
+cd ln/src/fe
 npm install
-npm run dev      # http://localhost:5173
-npm run build    # production build
 ```
 
-### Environment Variables (`.env.local`)
+### Bước 2 — Tạo file `.env.local`
+
+```bash
+cp .env.local.example .env.local
+```
+
+Mở `.env.local` và điền 4 giá trị:
+
+```env
+VITE_SUPABASE_URL=https://xxxxxxxxxxxx.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJ...
+VITE_SHEETS_ID=15Egfr7kjHfjbCssTnMnDuJSexcV6hVtZKkW3d-jksTc
+VITE_SHEETS_API_KEY=AIzaSy...
+```
 
 | Biến | Lấy ở đâu |
 |---|---|
-| `VITE_SUPABASE_URL` | Supabase → Settings → API → Project URL |
-| `VITE_SUPABASE_ANON_KEY` | Supabase → Settings → API → anon/public key |
-| `VITE_SHEETS_ID` | URL của Google Sheet: `docs.google.com/spreadsheets/d/**{ID}**/edit` |
-| `VITE_SHEETS_API_KEY` | Google Cloud Console → APIs & Services → Credentials → API Key |
+| `VITE_SUPABASE_URL` | Supabase Dashboard → Settings → API → Project URL |
+| `VITE_SUPABASE_ANON_KEY` | Supabase Dashboard → Settings → API → anon/public key |
+| `VITE_SHEETS_ID` | URL Google Sheet: `spreadsheets/d/**{ID}**/edit` |
+| `VITE_SHEETS_API_KEY` | Google Cloud Console → APIs & Services → Credentials → API Key (loại Browser key) |
 
-> Nếu chưa có env vars, app vẫn chạy bình thường với **fallback data** từ `src/data/koc-data.ts`.
+### Bước 3 — Chạy dev server
+
+```bash
+npm run dev
+# → http://localhost:5173
+```
+
+### Bước 4 — Build production
+
+```bash
+npm run build       # output: dist/
+npm run preview     # preview bản build tại http://localhost:4173
+```
+
+> **Toàn bộ nội dung hiển thị đến từ Google Sheets.** Không có mock data.
+> Nếu một tab Sheet trống / chưa tạo → section tương ứng tự **ẩn** (không hiện placeholder text).
 
 ---
 
@@ -78,138 +107,91 @@ CREATE POLICY "anon insert" ON newsletter_subscribers FOR INSERT TO anon WITH CH
 
 ---
 
-## Google Sheets — Hướng dẫn cập nhật nội dung
+## Google Sheets — Cấu trúc 14 tab
 
-> Dành cho **Linh Chi** — không cần biết code, chỉ cần sửa spreadsheet.
+> Quan trọng: Dòng 1 là **header**, không xóa, không sửa tên cột. Tên tab phải khớp **chính xác**.
+> `tone` luôn là một trong: `pink / mint / butter / lilac / peach / sky`.
 
-### 1. Tạo Google Sheet
+### Đã có sẵn (theo bản README cũ)
 
-1. Vào [sheets.google.com](https://sheets.google.com) → tạo spreadsheet mới
-2. Đặt tên: `linhchi-cms`
-3. Tạo **7 sheet tabs** với tên chính xác bên dưới (click dấu `+` góc dưới trái)
-4. Share → "Anyone with the link" → **Viewer**
-
-### 2. Cấu trúc từng tab
-
-> **Quan trọng:** Dòng đầu tiên là **header** — không xóa, không sửa tên cột.
-
----
-
-#### Tab `stats` — Số liệu tổng quan
-
-| `label_vi` | `label_en` | `value` | `sub_vi` | `sub_en` |
-|---|---|---|---|---|
-| Người theo dõi | Followers | 3.8K | TikTok | TikTok |
-| Lượt xem/tháng | Views / month | 48K | Cross-platform | Cross-platform |
-| Tỉ lệ tương tác | Engagement rate | 9.2% | Trên trung bình micro | Above micro avg |
-| Brand đã hợp tác | Brand partners | 6 | 2025 – 2026 | 2025 – 2026 |
-
-→ **Cập nhật:** Thay đổi cột `value` khi follower/views thay đổi.
-
----
-
-#### Tab `portfolio_items` — Video trong portfolio
-
-| Cột | Ý nghĩa | Ví dụ |
-|---|---|---|
-| `id` | Số thứ tự | 1, 2, 3... |
-| `brand` | Tên brand | Hermosa |
-| `niche` | Ngách (dùng đúng tên) | Beauty / Fashion / Food / Fitness / Lifestyle |
-| `tone` | Màu card | pink / mint / butter / lilac / peach / sky |
-| `duration` | Thời lượng | 0:47 |
-| `views` | Lượt xem | 18.2K |
-| `likes` | Lượt thích | 1.4K |
-| `title_vi` | Tiêu đề tiếng Việt | 7 ngày dùng serum Lumi |
-| `title_en` | Tiêu đề tiếng Anh | 7 days with Lumi serum |
-| `platform` | Nền tảng | TikTok / Instagram / YouTube |
-| `date` | Ngày đăng | 15/03/2025 |
-| `format_vi` | Định dạng VI | Review ngắn |
-| `format_en` | Định dạng EN | Short review |
-
-→ **Thêm video mới:** Copy dòng cuối, paste xuống dưới, sửa thông tin.
-
----
-
-#### Tab `packages` — Gói hợp tác & giá
-
-| Cột | Ý nghĩa | Ví dụ |
-|---|---|---|
-| `id` | Mã gói | gift / campaign / ambassador |
-| `name_vi` | Tên gói VI | Gifting |
-| `name_en` | Tên gói EN | Gifting |
-| `tagline_vi` | Mô tả ngắn VI | Trải nghiệm sản phẩm |
-| `tagline_en` | Mô tả ngắn EN | Product experience |
-| `price_vi` | Giá VI | Miễn phí sản phẩm |
-| `price_en` | Giá EN | Product only |
-| `tone` | Màu card | mint / pink / lilac |
-| `featured` | Nổi bật nhất | true / false |
-| `deliverables_vi` | Bao gồm VI (dùng `\|` để phân cách) | 1 video TikTok 30–60s\|2 vòng chỉnh sửa\|Analytics report |
-| `deliverables_en` | Bao gồm EN | 1 TikTok video 30–60s\|2 revision rounds\|Analytics report |
-
-→ **Cập nhật giá:** Sửa cột `price_vi` / `price_en`.
-
----
-
-#### Tab `testimonials` — Đánh giá từ brand
-
-| `brand` | `person` | `role_vi` | `role_en` | `quote_vi` | `quote_en` | `tone` |
-|---|---|---|---|---|---|---|
-| Hermosa | Nguyễn Mai | Marketing Manager | Marketing Manager | "Chi đọc brief..." | "Chi read the brief..." | pink |
-
----
-
-#### Tab `faqs` — Câu hỏi thường gặp
-
-| `q_vi` | `q_en` | `a_vi` | `a_en` |
-|---|---|---|---|
-| Bạn nhận gifting không? | Do you accept gifting? | Có, nếu... | Yes, if... |
-
-→ **Thêm câu hỏi mới:** Thêm dòng mới ở cuối.
-
----
-
-#### Tab `featured_products` — Sản phẩm đang review
-
-| Cột | Ví dụ |
-|---|---|
-| `id` | p1 |
-| `brand` | Hermosa |
-| `name_vi` | Son lì Velvet 04 |
-| `name_en` | Velvet Matte Lipstick 04 |
-| `niche_vi` | Mỹ phẩm |
-| `niche_en` | Beauty |
-| `rating` | 4.8 |
-| `price` | 320.000đ |
-| `tone` | pink |
-| `tag_vi` | Gifting |
-| `tag_en` | Gifting |
-
----
-
-#### Tab `koc_profile` — Thông tin cá nhân
-
-Chỉ có **1 dòng data** (dòng 2), không thêm dòng khác.
-
+#### Tab `koc_profile` — 1 dòng data, không thêm dòng khác
 | `name` | `handle` | `tagline_vi` | `tagline_en` | `bio_vi` | `bio_en` | `location` | `email` | `phone` |
-|---|---|---|---|---|---|---|---|---|
-| Linh Chi | @linhchi.daily | KOC mới... | Emerging KOC... | Mình là... | I'm... | Hà Nội | hello@... | +84... |
+
+#### Tab `stats`
+| `label_vi` | `label_en` | `value` | `sub_vi` | `sub_en` |
+
+#### Tab `portfolio_items`
+| `id` | `brand` | `niche` | `tone` | `duration` | `views` | `likes` | `title_vi` | `title_en` | `platform` | `date` | `format_vi` | `format_en` |
+
+#### Tab `packages`
+| `id` | `name_vi` | `name_en` | `tagline_vi` | `tagline_en` | `price_vi` | `price_en` | `tone` | `featured` | `deliverables_vi` | `deliverables_en` |
+> `deliverables_*` dùng `|` để phân cách: `Item 1|Item 2|Item 3`. `featured` = `true` / `false`.
+
+#### Tab `testimonials`
+| `brand` | `person` | `role_vi` | `role_en` | `quote_vi` | `quote_en` | `tone` |
+
+#### Tab `faqs`
+| `q_vi` | `q_en` | `a_vi` | `a_en` |
+
+#### Tab `featured_products`
+| `id` | `brand` | `name_vi` | `name_en` | `niche_vi` | `niche_en` | `rating` | `price` | `tone` | `tag_vi` | `tag_en` |
 
 ---
 
-### 3. Bao lâu thì website cập nhật?
+### Sheet còn THIẾU — cần tạo thêm
 
-- Mở app lần đầu sau khi sửa Sheet: **ngay lập tức** (fetch mới)
-- Nếu đã mở app rồi: tối đa **15 phút** (cache hết hạn)
-- Muốn cập nhật ngay: **Ctrl+Shift+R** (hard refresh)
+> Hiện 7 section/page sẽ tự **ẩn** nếu các tab dưới chưa tồn tại. Tạo tab với cấu trúc bên dưới để bật.
 
-### 4. Lưu ý quan trọng
+#### Tab `niches` — Ngách nội dung (Hero, Niches grid, Media Kit)
+| `label_vi` | `label_en` | `emoji` |
+|---|---|---|
+| Thời trang | Fashion | 👗 |
+| Mỹ phẩm | Beauty | 💄 |
 
-- ❌ Không xóa **dòng header** (dòng 1)
-- ❌ Không thay đổi **tên cột** trong header
-- ❌ Không thay đổi **tên tab sheet**
-- ✅ Chỉ sửa dòng data (dòng 2 trở đi)
-- ✅ Cột `tone` phải là một trong: `pink / mint / butter / lilac / peach / sky / ink`
-- ✅ Cột `niche` trong portfolio_items phải khớp với filter: `Beauty / Fashion / Food / Fitness / Lifestyle`
+#### Tab `videos` — Video viral tuần này (section Videos)
+| `id` | `title_vi` | `title_en` | `views` | `likes` | `duration` | `tone` |
+|---|---|---|---|---|---|---|
+| v1 | Tiêu đề VI | EN title | 12K | 950 | 0:55 | pink |
+
+#### Tab `trending` — Hot topics (section Trending)
+| `id` | `title_vi` | `title_en` | `niche` | `engagement` |
+|---|---|---|---|---|
+| t1 | 3 kem chống nắng dưới 300k | 3 sunscreens under 300k | Beauty | 11.4% |
+
+#### Tab `brands` — Brand wall marquee
+| `name` |
+|---|
+| Hermosa |
+| Lumi |
+
+#### Tab `story` — Timeline hành trình (About section)
+| `year_vi` | `year_en` | `title_vi` | `title_en` | `desc_vi` | `desc_en` |
+|---|---|---|---|---|---|
+| 2025 Q1 | 2025 Q1 | Video đầu tiên | First video | Quay video đầu... | First video... |
+| Hôm nay | Today | Sẵn sàng đồng hành | Ready to collaborate | ... | ... |
+
+#### Tab `process` — Quy trình hợp tác (Process section)
+| `step` | `title_vi` | `title_en` | `desc_vi` | `desc_en` | `time` |
+|---|---|---|---|---|---|
+| 01 | Brief & Align | Brief & Align | Call 20 phút... | 20-min call... | 1 day |
+
+#### Tab `audience` — Demographics (Media Kit + MediaKitPage)
+
+Dùng schema **dẹt** với cột `kind` để phân biệt loại dòng:
+
+| `kind` | `label_vi` | `label_en` | `pct` | `value` | `growth` | `color` |
+|---|---|---|---|---|---|---|
+| age | 18-24 |  | 52 |  |  |  |
+| age | 25-34 |  | 34 |  |  |  |
+| gender | Nữ | Female | 82 |  |  | var(--color-clay-pink) |
+| gender | Nam | Male | 15 |  |  | var(--color-clay-sky) |
+| city | Hà Nội | Hà Nội | 44 |  |  |  |
+| city | Khác | Other | 19 |  |  |  |
+| platform | TikTok |  |  | 3.8K | +32% |  |
+| platform | Instagram |  |  | 1.2K | +28% |  |
+
+> `kind` ∈ `age | gender | city | platform`. Cột không dùng để trống.
+> `color` cho gender chấp nhận CSS var hoặc hex.
 
 ---
 
@@ -217,22 +199,23 @@ Chỉ có **1 dòng data** (dòng 2), không thêm dòng khác.
 
 ```
 src/
-├── data/koc-data.ts        # Fallback data (dùng khi Sheets chưa config)
+├── data/koc-data.ts        # Empty defaults (tất cả Sheets-driven)
 ├── lib/
 │   ├── sheets.ts           # Google Sheets API fetchers + row mappers
 │   └── supabase.ts         # Supabase client singleton
 ├── hooks/
 │   ├── useSheetData.ts     # Stale-while-revalidate cache hook (15min TTL)
 │   ├── useFormSubmit.ts    # Generic Supabase insert hook
+│   ├── useKocData.tsx      # Sheets-backed KOC profile context
 │   └── useLang.ts          # VI/EN language context
-├── pages/                  # 5 pages: Landing, About, Portfolio, Booking, Contact
+├── pages/                  # 6 pages: Landing, About, Portfolio, Booking, Contact, MediaKit
 └── components/
-    ├── sections/           # 15 landing page sections
-    ├── layout/             # Nav, PageHero, PageFooter
-    ├── primitives/         # ClayCard, Blob, Counter, ...
-    └── ui/                 # Button, Input, Accordion, ...
+    ├── sections/           # 15 landing page sections (mỗi section tự ẩn nếu sheet trống)
+    ├── layout/             # Nav (mobile menu), PageHero, PageFooter
+    ├── primitives/         # ClayCard, Blob, PhotoPlaceholder (ImgSlot style)…
+    └── ui/                 # Button, Input, Accordion…
 ```
 
-**Data flow:** `useSheetData` → localStorage cache → Google Sheets API → fallback `koc-data.ts`
-
-**Form flow:** `useFormSubmit` → Supabase (anon insert, RLS enforced)
+**Cập nhật content:**
+- Mở app lần đầu sau khi sửa Sheet: **ngay lập tức**
+- Đã mở app rồi: tối đa **15 phút** (cache hết hạn) hoặc **Ctrl+Shift+R**

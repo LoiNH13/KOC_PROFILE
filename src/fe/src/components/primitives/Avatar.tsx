@@ -2,11 +2,34 @@ import type { CSSProperties } from 'react'
 
 interface AvatarProps {
   size?: number
+  src?: string
   style?: CSSProperties
   className?: string
 }
 
-export function Avatar({ size = 560, style, className }: AvatarProps) {
+export function Avatar({ size = 560, src, style, className }: AvatarProps) {
+  if (src) {
+    return (
+      <div
+        className={className}
+        style={{
+          width: '100%',
+          height: size,
+          borderRadius: 60,
+          boxShadow: 'var(--shadow-clay-lg)',
+          overflow: 'hidden',
+          ...style,
+        }}
+      >
+        <img
+          src={src}
+          alt="Avatar"
+          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+        />
+      </div>
+    )
+  }
+
   return (
     <div
       className={className}

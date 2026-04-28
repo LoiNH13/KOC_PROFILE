@@ -15,6 +15,19 @@ export interface KocData {
   location: string
   email: string
   phone: string
+  avatarUrl?: string
+  logoUrl?: string
+  tiktokUrl?: string
+  instagramUrl?: string
+  youtubeUrl?: string
+  facebookUrl?: string
+  packagesVisible?: boolean
+}
+
+export interface AboutPhoto {
+  slot: 'portrait' | 'studio' | 'behind'
+  url: string
+  label: BilingualText
 }
 
 export interface Stat {
@@ -38,6 +51,8 @@ export interface Product {
   price: string
   tone: Tone
   tag: BilingualText
+  link?: string
+  imageUrl?: string
 }
 
 export interface Video {
@@ -47,6 +62,8 @@ export interface Video {
   likes: string
   duration: string
   tone: Tone
+  imageUrl?: string
+  link?: string
 }
 
 export interface TrendingItem {
@@ -95,6 +112,16 @@ export interface FAQ {
   a: BilingualText
 }
 
+export interface ContactChannel {
+  kind: string
+  icon: string
+  label: BilingualText
+  value: string
+  desc: BilingualText
+  href: string
+  tone: Tone
+}
+
 export interface AudienceAge {
   range: string
   pct: number
@@ -136,4 +163,5 @@ export interface PortfolioItem {
   platform: string
   date: string
   format: BilingualText
+  imageUrl?: string
 }

@@ -1,30 +1,34 @@
 import { ClayCard } from '@/components/primitives'
 import { useLang } from '@/hooks/useLang'
-import { TRENDING } from '@/data/koc-data'
+import { TRENDING as TRENDING_FALLBACK } from '@/data/koc-data'
+import { fetchTrending } from '@/lib/sheets'
+import { useSheetData } from '@/hooks/useSheetData'
 
 const BG  = ['var(--color-clay-pink)', 'var(--color-clay-butter)', 'var(--color-clay-mint)']
 const INK = ['var(--color-clay-accent-ink)', '#7A5E00', '#1F6B47']
 
 export function Trending() {
   const { lang } = useLang()
+  const TRENDING = useSheetData('trending', fetchTrending, TRENDING_FALLBACK)
+  if (TRENDING.length === 0) return null
   return (
-    <section className="px-12 py-16">
+    <section className="px-4 sm:px-6 md:px-8 lg:px-12 py-12 lg:py-16">
       <div className="max-w-[1240px] mx-auto">
-        <h2 className="font-display text-[42px] font-semibold tracking-[-1.2px] text-clay-ink mb-8">
+        <h2 className="font-display text-[28px] sm:text-[34px] lg:text-[42px] font-semibold tracking-[-1.2px] text-clay-ink mb-6 lg:mb-8">
           🔥 {lang === 'vi' ? 'Chủ đề bùng nổ' : 'Hot topics'}
         </h2>
-        <div className="grid grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">
           {TRENDING.map((item, i) => (
-            <ClayCard key={item.id} bg={BG[i]} rotate={(i - 1) * 1.5} className="p-7 flex flex-col gap-4 min-h-[200px]">
+            <ClayCard key={item.id} bg={BG[i % BG.length]} rotate={(i - 1) * 1.5} className="p-6 lg:p-7 flex flex-col gap-4 min-h-[180px] lg:min-h-[200px]">
               <div className="flex justify-between items-start">
-                <span className="font-display text-[52px] font-bold leading-[0.9] tracking-[-2px]" style={{ color: INK[i] }}>
+                <span className="font-display text-[40px] lg:text-[52px] font-bold leading-[0.9] tracking-[-2px]" style={{ color: INK[i % INK.length] }}>
                   0{i + 1}
                 </span>
                 <span className="px-3 py-1 rounded-full bg-clay-surface text-[11px] font-bold text-clay-ink shadow-sm">
                   {item.niche}
                 </span>
               </div>
-              <p className="font-display text-[21px] leading-snug text-clay-ink font-semibold tracking-tight">
+              <p className="font-display text-[18px] lg:text-[21px] leading-snug text-clay-ink font-semibold tracking-tight">
                 {item.title[lang]}
               </p>
               <div className="mt-auto flex justify-between text-[13px] text-clay-ink font-semibold">

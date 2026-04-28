@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { LangProvider, useLang } from '@/hooks/useLang'
 import { DarkProvider, useDark } from '@/hooks/useDark'
+import { KocDataProvider } from '@/hooks/useKocData'
 import { LandingPage } from '@/pages/LandingPage'
 import { AboutPage } from '@/pages/AboutPage'
 import { PortfolioPage } from '@/pages/PortfolioPage'
@@ -73,7 +74,9 @@ export default function App() {
   return (
     <DarkProvider>
       <LangProvider>
-        <AppInner />
+        <KocDataProvider>
+          <AppInner />
+        </KocDataProvider>
       </LangProvider>
     </DarkProvider>
   )

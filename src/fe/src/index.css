@@ -115,6 +115,23 @@ html.dark {
   .no-print { display: none !important; }
 }
 
+/* ── Media kit viewport: scale A4 canvas down on narrow screens ── */
+.mediakit-viewport {
+  width: 794px;
+  max-width: 100%;
+}
+@media (max-width: 820px) {
+  .mediakit-viewport {
+    width: 100%;
+    overflow-x: hidden;
+  }
+  .mediakit-viewport > [data-mediakit] {
+    transform-origin: top center;
+    transform: scale(calc((100vw - 24px) / 794));
+    margin-bottom: calc((100vw - 24px) / 794 * 1123 - 1123px);
+  }
+}
+
 /* ── Base ────────────────────────────────────────────────── */
 @layer base {
   *, *::before, *::after { box-sizing: border-box; }

@@ -10,45 +10,12 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { useLang } from '@/hooks/useLang'
-import { KOC_DATA } from '@/data/koc-data'
-import type { Page } from '@/types'
+import { useKocData } from '@/hooks/useKocData'
+import { useSheetData } from '@/hooks/useSheetData'
+import { fetchContactChannels } from '@/lib/sheets'
+import type { Page, ContactChannel } from '@/types'
 
 interface ContactPageProps { onNavigate: (p: Page) => void }
-
-const CHANNELS = [
-  {
-    icon: '✉️',
-    label: { vi: 'Email',   en: 'Email' },
-    value: KOC_DATA.email,
-    desc:  { vi: 'Phản hồi trong 24h',     en: 'Reply within 24h' },
-    tone: 'pink' as const,
-    href: `mailto:${KOC_DATA.email}`,
-  },
-  {
-    icon: '💬',
-    label: { vi: 'Zalo',    en: 'Zalo' },
-    value: KOC_DATA.phone,
-    desc:  { vi: 'Nhanh nhất — phản hồi ngay', en: 'Fastest — reply instantly' },
-    tone: 'mint' as const,
-    href: `tel:${KOC_DATA.phone}`,
-  },
-  {
-    icon: '📸',
-    label: { vi: 'TikTok',  en: 'TikTok' },
-    value: KOC_DATA.handle,
-    desc:  { vi: 'DM qua TikTok',           en: 'DM on TikTok' },
-    tone: 'butter' as const,
-    href: `https://tiktok.com/${KOC_DATA.handle}`,
-  },
-  {
-    icon: '📷',
-    label: { vi: 'Instagram', en: 'Instagram' },
-    value: KOC_DATA.handle,
-    desc:  { vi: 'DM qua Instagram',        en: 'DM on Instagram' },
-    tone: 'lilac' as const,
-    href: `https://instagram.com/${KOC_DATA.handle}`,
-  },
-]
 
 const BG_MAP: Record<string, string> = {
   pink:   'var(--color-clay-pink)',
@@ -65,6 +32,9 @@ const HOURS = [
 
 export function ContactPage({ onNavigate }: ContactPageProps) {
   const { lang } = useLang()
+  const KOC_DATA = useKocData()
+  const CHANNELS = useSheetData<ContactChannel[]>('contact_channels', fetchContactChannels, [])
+
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [msg, setMsg] = useState('')
@@ -86,44 +56,43 @@ export function ContactPage({ onNavigate }: ContactPageProps) {
         tone="lilac"
       />
 
-      {/* Channel cards */}
-      <section className="px-12 pb-16">
-        <div className="max-w-[1240px] mx-auto grid grid-cols-4 gap-5">
-          {CHANNELS.map((ch, i) => (
-            <motion.a
-              key={ch.tone}
-              href={ch.href}
-              target={ch.href.startsWith('http') ? '_blank' : undefined}
-              rel="noopener noreferrer"
-              initial={{ rotate: i % 2 === 0 ? -1.2 : 1.2 }}
-              whileHover={{ rotate: 0, y: -6, transition: { type: 'spring', stiffness: 300 } }}
-              className="block rounded-clay p-7 shadow-clay no-underline cursor-pointer"
-              style={{ background: BG_MAP[ch.tone] }}
-            >
-              <div className="text-[44px] mb-4">{ch.icon}</div>
-              <p className="text-xs font-bold uppercase tracking-widest text-clay-ink-muted mb-1">{ch.label[lang]}</p>
-              <p className="font-semibold text-clay-ink text-sm mb-2">{ch.value}</p>
-              <p className="text-xs text-clay-ink/75">{ch.desc[lang]}</p>
-            </motion.a>
-          ))}
-        </div>
-      </section>
+      {CHANNELS.length > 0 && (
+        <section className="px-4 sm:px-6 md:px-8 lg:px-12 pb-12 lg:pb-16">
+          <div className="max-w-[1240px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
+            {CHANNELS.map((ch, i) => (
+              <motion.a
+                key={ch.tone}
+                href={ch.href}
+                target={ch.href.startsWith('http') ? '_blank' : undefined}
+                rel="noopener noreferrer"
+                initial={{ rotate: i % 2 === 0 ? -1.2 : 1.2 }}
+                whileHover={{ rotate: 0, y: -6, transition: { type: 'spring', stiffness: 300 } }}
+                className="block rounded-clay p-6 lg:p-7 shadow-clay no-underline cursor-pointer"
+                style={{ background: BG_MAP[ch.tone] }}
+              >
+                <div className="text-[36px] lg:text-[44px] mb-3 lg:mb-4">{ch.icon}</div>
+                <p className="text-xs font-bold uppercase tracking-widest text-clay-ink-muted mb-1">{ch.label[lang]}</p>
+                <p className="font-semibold text-clay-ink text-sm mb-2 break-all">{ch.value}</p>
+                <p className="text-xs text-clay-ink/75">{ch.desc[lang]}</p>
+              </motion.a>
+            ))}
+          </div>
+        </section>
+      )}
 
-      {/* Hours + Form */}
-      <section className="px-12 pb-24">
-        <div className="max-w-[1240px] mx-auto grid grid-cols-[1fr_480px] gap-12 items-start">
+      <section className="px-4 sm:px-6 md:px-8 lg:px-12 pb-20 lg:pb-24">
+        <div className="max-w-[1240px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_440px] gap-8 lg:gap-12 items-start">
 
-          {/* Hours + note */}
           <div>
-            <div className="inline-block px-3.5 py-1.5 rounded-full bg-clay-butter shadow-clay text-xs font-bold text-[#7A5E00] uppercase tracking-widest mb-6">
+            <div className="inline-block px-3 py-1.5 rounded-full bg-clay-butter shadow-clay text-[11px] font-bold text-[#7A5E00] uppercase tracking-widest mb-5 lg:mb-6">
               {lang === 'vi' ? '🕐 Giờ trực' : '🕐 Working hours'}
             </div>
-            <h2 className="font-display text-[38px] font-medium tracking-[-1.5px] leading-[1.1] mb-8">
+            <h2 className="font-display text-[28px] sm:text-[32px] lg:text-[38px] font-medium tracking-[-1.2px] lg:tracking-[-1.5px] leading-[1.1] mb-6 lg:mb-8">
               {lang === 'vi' ? 'Khi nào mình có mặt?' : 'When am I around?'}
             </h2>
-            <div className="space-y-3 mb-10">
-              {HOURS.map((h, i) => (
-                <div key={i} className="flex justify-between items-center px-5 py-4 rounded-2xl bg-clay-surface border border-clay-border">
+            <div className="space-y-3 mb-8 lg:mb-10">
+              {HOURS.map((h) => (
+                <div key={h.day.en} className="flex justify-between items-center px-4 lg:px-5 py-3 lg:py-4 rounded-2xl bg-clay-surface border border-clay-border">
                   <span className="text-sm font-bold text-clay-ink">{h.day[lang]}</span>
                   <span className="text-sm text-clay-ink-soft">
                     {typeof h.time === 'object' ? h.time[lang] : h.time}
@@ -143,23 +112,24 @@ export function ContactPage({ onNavigate }: ContactPageProps) {
               </p>
             </ClayCard>
 
-            <div className="relative mt-10 pl-6">
-              <Sparkle size={28} color="var(--color-clay-accent)" className="absolute -top-2 -left-1" style={{ transform: 'rotate(10deg)' }} />
-              <p className="text-[13px] text-clay-ink-soft italic leading-relaxed">
-                {lang === 'vi'
-                  ? '"Mình cố gắng trả lời mọi tin nhắn — dù không hợp tác được. Cảm ơn bạn đã nhắn nhé."'
-                  : '"I try to reply to every message — even if we can\'t collab. Thanks for reaching out."'}
-              </p>
-              <p className="text-xs font-bold text-clay-accent mt-2">— Linh Chi</p>
-            </div>
+            {KOC_DATA.name && (
+              <div className="relative mt-8 lg:mt-10 pl-6">
+                <Sparkle size={28} color="var(--color-clay-accent)" className="absolute -top-2 -left-1" style={{ transform: 'rotate(10deg)' }} />
+                <p className="text-[13px] text-clay-ink-soft italic leading-relaxed">
+                  {lang === 'vi'
+                    ? '"Mình cố gắng trả lời mọi tin nhắn — dù không hợp tác được. Cảm ơn bạn đã nhắn nhé."'
+                    : '"I try to reply to every message — even if we can\'t collab. Thanks for reaching out."'}
+                </p>
+                <p className="text-xs font-bold text-clay-accent mt-2">— {KOC_DATA.name}</p>
+              </div>
+            )}
           </div>
 
-          {/* Quick message form */}
-          <ClayCard bg="var(--color-clay-surface)" className="p-8">
+          <ClayCard bg="var(--color-clay-surface)" className="p-6 sm:p-8">
             {sent ? (
-              <motion.div initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-12">
-                <div className="text-5xl mb-4">💌</div>
-                <h3 className="font-display text-[28px] font-semibold tracking-tight mb-2">
+              <motion.div initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-10 lg:py-12">
+                <div className="text-4xl lg:text-5xl mb-4">💌</div>
+                <h3 className="font-display text-[24px] lg:text-[28px] font-semibold tracking-tight mb-2">
                   {lang === 'vi' ? 'Gửi rồi!' : 'Sent!'}
                 </h3>
                 <p className="text-clay-ink-soft text-sm">
@@ -168,7 +138,7 @@ export function ContactPage({ onNavigate }: ContactPageProps) {
               </motion.div>
             ) : (
               <>
-                <p className="text-xs font-bold uppercase tracking-widest text-clay-ink-muted mb-6">
+                <p className="text-xs font-bold uppercase tracking-widest text-clay-ink-muted mb-5 lg:mb-6">
                   {lang === 'vi' ? '✉️ Gửi tin nhắn nhanh' : '✉️ Quick message'}
                 </p>
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -176,13 +146,13 @@ export function ContactPage({ onNavigate }: ContactPageProps) {
                     <Label className="text-xs font-bold uppercase tracking-widest text-clay-ink-muted mb-1.5 block">
                       {lang === 'vi' ? 'Tên bạn' : 'Your name'} *
                     </Label>
-                    <Input value={name} onChange={e => setName(e.target.value)} placeholder={lang === 'vi' ? 'Nguyễn Văn A' : 'Jane Smith'} required />
+                    <Input value={name} onChange={e => setName(e.target.value)} placeholder={lang === 'vi' ? 'Tên của bạn' : 'Your name'} required />
                   </div>
                   <div>
                     <Label className="text-xs font-bold uppercase tracking-widest text-clay-ink-muted mb-1.5 block">
                       Email *
                     </Label>
-                    <Input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@email.com" required />
+                    <Input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="email@domain.com" required />
                   </div>
                   <div>
                     <Label className="text-xs font-bold uppercase tracking-widest text-clay-ink-muted mb-1.5 block">
