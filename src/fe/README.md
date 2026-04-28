@@ -218,4 +218,4 @@ src/
 
 **Cập nhật content:**
 - Mở app lần đầu sau khi sửa Sheet: **ngay lập tức**
-- Đã mở app rồi: tối đa **15 phút** (cache hết hạn) hoặc **Ctrl+Shift+R**
+- Đã mở app rồi: tối đa **15 phút** (cache hết hạn) hoặc **Ctrl+Shift+R** 
